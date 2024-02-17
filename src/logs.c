@@ -10,6 +10,7 @@ void generate_log(char *str)
     ft_putstr_fd(data->fd_logfile, "----------- Action Performed: -----------\n");
     ft_putstr_fd(1, "----------- Action Performed: -----------\n");
 
+
     // write date and time to log file
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);char *year = ft_itoa(tm.tm_year + 1900);
@@ -24,21 +25,31 @@ void generate_log(char *str)
     char *date_month = ft_strjoin(date, month);
     free(date);
     free(month);
-    char *date_month_day = ft_strjoin(date_month, day);
+    char *date_month_day_tmp = ft_strjoin(date_month, "-");
+    char *date_month_day = ft_strjoin(date_month_day_tmp, day);
+    free(date_month_day_tmp);
     free(date_month);
     free(day);
-    char *date_month_day_hour = ft_strjoin(date_month_day, hour);
+    char *date_month_day_hour_tmp = ft_strjoin(date_month_day, " ");
+    char *date_month_day_hour = ft_strjoin(date_month_day_hour_tmp, hour);
+    free(date_month_day_hour_tmp);
     free(date_month_day);
     free(hour);
-    char *date_month_day_hour_min = ft_strjoin(date_month_day_hour, min);
+    char *date_month_day_hour_min_tmp = ft_strjoin(date_month_day_hour, ":");
+    char *date_month_day_hour_min = ft_strjoin(date_month_day_hour_min_tmp, min);
+    free(date_month_day_hour_min_tmp);
     free(date_month_day_hour);
     free(min);
-    char *date_time = ft_strjoin(date_month_day_hour_min, sec);
+    char *date_time_tmp = ft_strjoin(date_month_day_hour_min, ":");
+    char *date_time = ft_strjoin(date_time_tmp, sec);
+    free(date_time_tmp);
     free(date_month_day_hour_min);
     free(sec);
-    ft_putstr_fd(data->fd_logfile, date_time);
-    ft_putstr_fd(1, date_time);
+    char *final_msg = ft_strjoin(date_time, " ");
     free(date_time);
+    ft_putstr_fd(data->fd_logfile, final_msg);
+    ft_putstr_fd(1, final_msg);
+    free(final_msg);
 
     // write launch parameters to log file
     ft_putstr_fd(data->fd_logfile, str);
@@ -53,9 +64,24 @@ void init_log()
     t_folder_sync_c *data;
     data = get_struct(NULL);
 
+	// open log file
+	char *log_file_name = LOG_FILE_NAME;
+    if (data->launch_params->log_path[ft_strlen(data->launch_params->log_path) - 1] != '/')
+    {
+        data->launch_params->log_path = ft_strcat(data->launch_params->log_path, "/");
+    }
+	char *log_file_path_name = ft_strcat(data->launch_params->log_path, log_file_name);
+	data->fd_logfile = open(log_file_path_name, O_CREAT | O_WRONLY | O_APPEND, 0644);
+	if (data->fd_logfile == -1)
+	{
+		ft_putstr_fd(2, "Error: could not open log file\n");
+        clean_n_exit(0);
+	}
+    
     // write to log file
     ft_putstr_fd(data->fd_logfile, "----------- Program started -----------\n");
     ft_putstr_fd(1, "----------- Program started -----------\n");
+
 
     // write date and time to log file
     time_t t = time(NULL);
@@ -71,21 +97,31 @@ void init_log()
     char *date_month = ft_strjoin(date, month);
     free(date);
     free(month);
-    char *date_month_day = ft_strjoin(date_month, day);
+    char *date_month_day_tmp = ft_strjoin(date_month, "-");
+    char *date_month_day = ft_strjoin(date_month_day_tmp, day);
+    free(date_month_day_tmp);
     free(date_month);
     free(day);
-    char *date_month_day_hour = ft_strjoin(date_month_day, hour);
+    char *date_month_day_hour_tmp = ft_strjoin(date_month_day, " ");
+    char *date_month_day_hour = ft_strjoin(date_month_day_hour_tmp, hour);
+    free(date_month_day_hour_tmp);
     free(date_month_day);
     free(hour);
-    char *date_month_day_hour_min = ft_strjoin(date_month_day_hour, min);
+    char *date_month_day_hour_min_tmp = ft_strjoin(date_month_day_hour, ":");
+    char *date_month_day_hour_min = ft_strjoin(date_month_day_hour_min_tmp, min);
+    free(date_month_day_hour_min_tmp);
     free(date_month_day_hour);
     free(min);
-    char *date_time = ft_strjoin(date_month_day_hour_min, sec);
+    char *date_time_tmp = ft_strjoin(date_month_day_hour_min, ":");
+    char *date_time = ft_strjoin(date_time_tmp, sec);
+    free(date_time_tmp);
     free(date_month_day_hour_min);
     free(sec);
-    ft_putstr_fd(data->fd_logfile, date_time);
-    ft_putstr_fd(1, date_time);
+    char *final_msg = ft_strjoin(date_time, " ");
     free(date_time);
+    ft_putstr_fd(data->fd_logfile, final_msg);
+    ft_putstr_fd(1, final_msg);
+    free(final_msg);
 
     // write launch parameters to log file
     char *s_launch_params = ft_strjoin("Folder path: ", data->launch_params->folder_path);

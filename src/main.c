@@ -63,70 +63,28 @@ int start_sync()
 
 int main(int ac, char **av)
 {
-    // hanlde exit signals
-    signal_handler();
     // check paramaters
 	if (ac != 4)
 	{
 		ft_putstr_fd(2, "Usage: Folder_Sync_C <folder_path> <sync_interval> <log_path>\n");
 		exit(1);
 	}
-    // memory allocation
-    t_folder_sync_c *data = prepare_structs();
+        
+    // hanlde exit signals
+    signal_handler();
 
-    // validate sync interval
-	if (is_digit(av[2]))
-	{
-		ft_putstr_fd(2, "Error: sync_interval must be a number\n");
-        clean_n_exit(0);
-	}
-	data->launch_params->sync_interval = ft_atoi(av[2]);
-    if (data->launch_params->sync_interval < 1)
-    {
-        ft_putstr_fd(2, "Error: sync_interval must be greater than 0\n");
-        clean_n_exit(0);
-    }
-    data->launch_params->string_sync_interval = av[2];
+    // verify launch parameters
+    validations(av);
 
-    // validate folder_path
-	data->launch_params->folder_path = av[1];
-	if (access(data->launch_params->folder_path, F_OK == -1))
-	{
-		ft_putstr_fd(2, "Error: folder path is not a valid path\n");
-        clean_n_exit(0);
-	}
-
-    // validate log_path
-	data->launch_params->log_path = av[3];
-	if (access(data->launch_params->log_path, F_OK == -1))
-	{
-		ft_putstr_fd(2, "Error: log path is not a valid path\n");
-        clean_n_exit(0);
-	}
-
-	// open log file
-	char *log_file_name = "log.txt";
-    if (data->launch_params->log_path[ft_strlen(data->launch_params->log_path) - 1] != '/')
-    {
-        data->launch_params->log_path = ft_strcat(data->launch_params->log_path, "/");
-    }
-	char *log_file_path_name = ft_strcat(data->launch_params->log_path, log_file_name);
-	data->fd_logfile = open(log_file_path_name, O_CREAT | O_WRONLY | O_APPEND, 0644);
-	if (data->fd_logfile == -1)
-	{
-		ft_putstr_fd(2, "Error: could not open log file\n");
-        clean_n_exit(0);
-	}
-
-	// write date and time to log file
-	init_log();
-	if (start_sync())
-	{
+    //init logs
+    init_log();
+	
+    // start up the sync process
+    if (start_sync())
 		ft_putstr_fd(2, "Error: sync process interrupted\n");
-        clean_n_exit(0);
-	}
 
-	// close log file
+	// free up memory and exit program
 	clean_n_exit(0);
+
 	return (0);
 }

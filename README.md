@@ -4,6 +4,8 @@
 
 # Usage:
 ```
+use 'make' to complile the program, the parameters 'clean', 'fclean' and 're' are also available
+
 ./Folder_Sync <folder_to_sync> <sync_frequency_in_seconds> <folder_to_save_log>
 ex.: ./Folder_Sync_C src 5 .
 ```

@@ -12,6 +12,9 @@
 # include <stdlib.h> // to use malloc
 # include <signal.h> // to use signals
 
+// log file name
+# define LOG_FILE_NAME "log.txt"
+
 # define INT_MAX 2147483647
 # define INT_MIN -2147483648
 
@@ -58,5 +61,8 @@ void clean_n_exit(int sig);
 
 // signals.c
 void signal_handler(void);
+
+// validators.c
+void validations(char **av);
 
 #endif
